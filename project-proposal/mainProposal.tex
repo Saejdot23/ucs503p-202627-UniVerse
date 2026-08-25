@@ -1,0 +1,249 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% -----------------------------------------------------
+% bvraghav-tiet-ucs503p-article.sty
+% -----------------------------------------------------
+
+% Variable: Lab Instructor
+\makeatletter \newcommand{\BvrSetLabInstructor}[1]{%
+  \gdef\Bvr@LabInstructor{#1}}
+% default
+\newcommand{\Bvr@LabInstructor}{Ms. Paramveer Sidhu}
+% public accessor
+\newcommand{\BvrLabInstructorValue}{\Bvr@LabInstructor}
+\makeatother
+
+% Add subtitle
+\usepackage{titling}
+% -- Set title bold
+\pretitle{\begin{center}\bfseries\fontsize{18bp}{18bp}\selectfont}
+\makeatletter
+\newcommand{\BvrSubtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip 0.5em}%
+}
+\makeatother
+
+% Hints in the section title(s)
+\newcommand{\BvrHint}[1]{%
+  {\normalfont\normalsize\itshape\hfill #1}}
+
+% -----------------------------------------------------
+
+\title{UniVerse: A Trust-Based Campus Community and Skill-Exchange Platform}
+
+\BvrSetLabInstructor{Ms. Paramveer Sidhu}
+
+\BvrSubtitle{%
+  Project Proposal for UCS503P  \\
+  Submitted to: \BvrLabInstructorValue \\ \bfseries
+  Thapar Institute of Engineering and Technology% 
+}
+
+\author{
+  Sehajneet Kaur, CSED%
+  \thanks{Roll No: \texttt{1024030215}, %
+    Email: \texttt{skaur10\_be24\@thapar.edu}}
+  \and 
+  Raynee Jindal, CSED%
+  \thanks{Roll No: \texttt{1024030711}, %
+    Email: \texttt{rjinadal\_be24\@thapar.edu}}
+  \and
+  Sahejbir Singh, CSED%
+  \thanks{Roll No: \texttt{1024030247}, %
+    Email: \texttt{ssingh10\_be2x\@thapar.edu}}
+  \and
+  Shaurya Ranjan, CSED%
+  \thanks{Roll No: \texttt{1024030694}, %
+    Email: \texttt{sranjan\_be24\@thapar.edu}}
+}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Higher-order goal%
+  \BvrHint{\ldots secondary framing}}
+This project aims to strengthen peer-to-peer trust and knowledge circulation within a college campus by making mentorship, skill-sharing, and resource-lending discoverable to every student, not just those already embedded in a society or a large personal network. While the broader goal is community-building, the immediate engineering objective is to translate \emph{trust-based peer exchange} into a measurable, deployable software solution.
+
+\section{Time-to-value %
+\BvrHint{\ldots primary heuristic}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item We will deliver a usable core loop quickly by prototyping the channel-based community space and the skill-swap matching flow, and validating both with real students within a short iteration window.
+    \item We will prioritize fast feedback over perfection by using weekly iterations and targeting CI-backed automation early to reduce release friction.
+    \item Success is defined by what can be delivered and measured in the first iteration -- a working set of community channels and a functioning skill-swap points system -- then improved based on user feedback.
+\end{itemize}
+
+\section{Problem Statement}
+Students at a residential college campus often cannot access mentorship, specific skills, or basic resources (borrowing an item, recovering something lost) unless they already belong to a society or have a wide personal network. Common pain points include:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Access inequality:} guidance and mentorship on niche or specific skills is concentrated within existing social circles, leaving unconnected students without a path in.
+    \item \textbf{Redundant paid learning:} students often pay for external resources to learn something a peer on campus could already teach them.
+    \item \textbf{No trust layer for informal exchange:} lending, borrowing, lost-and-found, and general help currently happen through scattered WhatsApp groups with no accountability, history, or verification.
+    \item \textbf{No record of informal learning:} peer-taught skills and mentorship sessions leave no trace a student can point to later, even though the effort and outcome are real.
+\end{itemize}
+
+\textbf{Why this matters now (contextual relevance):} With a large, skill-diverse student body living on one campus, the supply of mentorship and resources already exists -- what is missing is a trusted, discoverable layer to connect it.
+
+\section{Proposed Solution %
+\BvrHint{\ldots Software Proposition}}
+\subsection{Overview}
+Build a \textbf{web-based} campus community platform, UniVerse, with two core pillars:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Community channels:} Discord-style dedicated channels for lending, borrowing, lost items, found items, and general discussion.
+    \item \textbf{Skill Swap:} a mentorship and peer-learning marketplace where users list skills they can teach and skills they want to learn, request sessions, and build a points-based reputation.
+    \item \textbf{User profile:} name, branch, skills offered/wanted, points balance, sessions taken/given, and leaderboard rank -- shareable as proof of learning (e.g., on LinkedIn).
+    \item \textbf{Recommendation surface:} the Skill Swap landing page recommends listings based on the skills a user has marked as wanted.
+\end{itemize}
+
+\subsection{Core workflow}
+\begin{enumerate}[leftmargin=0.7cm]
+    \item Student creates a profile listing skills they can teach and skills they want to learn.
+    \item Skill Swap surfaces recommended mentors/listings based on the student's "want to learn" list.
+    \item Student sends a request for a session (guidance, mentorship, or skill swap); once completed, the mentor earns points and the learner spends points.
+    \item Points scale with uniqueness of mentees taught, feeding a leaderboard that doubles as a portable record of contribution.
+    \item In parallel, students post and browse lending, borrowing, lost, and found items in dedicated channels, building a visible history of trustworthy exchanges.
+\end{enumerate}
+
+\subsection{Operational constraints for an educational, campus setting}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Keep the solution usable on low-to-mid range devices via responsive web design.
+    \item Avoid dependence on advanced research algorithms (e.g., ML-based matching); focus on workflow, trust mechanics, and system correctness.
+    \item Restrict sign-up to verified college email addresses to keep the trust layer meaningful.
+    \item Design for deployability using common web hosting and managed databases.
+\end{itemize}
+
+\section{Solution Approach %
+\BvrHint{\ldots Engineering focus}}
+This is an engineering course project, so we focus on scalable platform and workflow aspects rather than novel algorithm research.
+
+\subsection{Points and reputation logic %
+\BvrHint{\ldots non-research}}
+The points system will be rule-based, not ML-based:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Teaching a skill awards more points than learning one costs, by a fixed configurable ratio.
+    \item Teaching additional \emph{unique} learners yields a bonus, discouraging repeated sessions with the same pair from inflating rank.
+    \item All point transactions are logged per session for auditability and dispute resolution; there is no automatic deduction without a completed, confirmed session.
+\end{itemize}
+
+\subsection{Recommendation logic}
+Listing recommendations on the Skill Swap page will use a simple tag-matching heuristic (overlap between a user's "want to learn" tags and other users' "can teach" tags), without claiming state-of-the-art personalization.
+
+\subsection{Web architecture %
+\BvrHint{\ldots web-based solution}}
+A typical 3-tier web architecture:
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Frontend:} React-based responsive UI for channels, profiles, Skill Swap listings, and the leaderboard.
+    \item \textbf{Backend API:} Node.js/Express service handling authentication, channel messaging, session requests, and points transactions.
+    \item \textbf{Database:} MongoDB storing users, profiles, channel messages, skill listings, sessions, and points history.
+\end{itemize}
+
+\subsection{CI/CD and fast delivery enabler}
+CI/CD will be used to:
+\begin{itemize}[leftmargin=0.7cm]
+    \item Automatically build and run tests on every change.
+    \item Produce repeatable deployment artifacts to staging.
+    \item Enable safe and frequent releases of incremental features (skill swap first, then channels, then leaderboard/profile polish).
+\end{itemize}
+
+\section{Evaluation Criterion %
+\BvrHint{\ldots measurable and attributable}}
+We define success using measurable metrics tied to the two core workflows.
+
+\subsection{Primary evaluation metric}
+\textbf{Session completion rate:} proportion of Skill Swap session requests that result in a confirmed, completed session.
+\begin{itemize}[leftmargin=0.7cm]
+    \item Target: $\ge$ 60\% of session requests completed during the pilot window.
+    \item Attribution: measured from database timestamps and session-confirmation records (request created vs. marked complete by both parties).
+\end{itemize}
+
+\subsection{Secondary evaluation metrics}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Unique mentee reach:} average number of distinct learners taught per active mentor.
+    \item \textbf{Channel activity:} number of lending/borrowing/lost/found posts resolved (item returned or matched) versus posted.
+    \item \textbf{User clarity:} user-reported clarity of the points and ranking system using a simple 1--5 feedback question.
+    \item \textbf{Reliability:} availability of staging/production for login, posting, and session requests during peak campus hours (e.g., $\ge$ 99\% uptime in pilot).
+\end{itemize}
+
+\subsection{Pilot validation plan %
+\BvrHint{\ldots high-level}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Recruit 20--30 pilot users across multiple branches and years to ensure skill diversity.
+    \item Track requested vs. completed sessions and channel resolutions over the iteration window, comparing against a baseline collected via short interviews on how students currently find mentors or lend/borrow items.
+\end{itemize}
+
+\section{Scalability %
+\BvrHint{\ldots with foresight}}
+The proposition should scale in both theoretical and practical senses.
+
+\begin{enumerate}[leftmargin=0.7cm]
+    \item \textbf{Scalable (theoretically):} The system should support growth in number of users, channels, and concurrent Skill Swap requests by:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item decoupling components (frontend/backend),
+        \item enabling pagination and indexing for channel messages and skill listings,
+        \item using stateless API design.
+    \end{itemize}
+    
+    \item \textbf{Operationally deployable (practically):} The system should run on common web hosting:
+    \begin{itemize}[leftmargin=0.7cm]
+        \item managed MongoDB instance,
+        \item containerized or platform-hosted deployment,
+        \item CI/CD pipeline for staging/production.
+    \end{itemize}
+\end{enumerate}
+
+\section{Engine availability heuristic}
+A mature set of ``engines'' (tooling/services) is available to implement this as a web-based project:
+\begin{itemize}[leftmargin=0.7cm]
+    \item React for the frontend; Node.js/Express for REST APIs.
+    \item MongoDB (managed, e.g., Atlas) as the primary document store.
+    \item Token-based authentication restricted to college email domains.
+    \item Object storage for optional attachments (item photos) or local storage for pilot.
+    \item Test framework for unit/integration tests (e.g., Jest).
+    \item CI runner and staging deployment target.
+\end{itemize}
+We will use these mature components to focus on workflow design, trust mechanics, and measurement rather than inventing new infrastructure.
+
+\section{Project scope and deliverables %
+\BvrHint{\ldots iteration-friendly}}
+\subsection{Initial deliverable %
+\BvrHint{\ldots first iteration}}
+\begin{itemize}[leftmargin=0.7cm]
+    \item User authentication (college email) and basic profile (name, branch, skills)
+    \item Community channels: lending, borrowing, lost, found, general
+    \item Skill Swap: list skills to teach/learn, browse listings
+    \item Session request flow with manual completion confirmation
+    \item Points logic: award/deduct on confirmed session completion
+    \item CI: build + backend unit tests + linting
+    \item CD to staging with a single command or pipeline job
+\end{itemize}
+
+\subsection{Subsequent deliverables}
+\begin{itemize}[leftmargin=0.7cm]
+    \item Tag-based recommended listings on the Skill Swap landing page
+    \item Leaderboard with rank, sessions taught/taken, and unique-mentee bonus
+    \item Shareable profile summary (exportable for LinkedIn)
+    \item Improved search/filtering and indexed queries for scale readiness
+\end{itemize}
+
+\section{Risks and mitigations}
+\begin{itemize}[leftmargin=0.7cm]
+    \item \textbf{Trust and safety:} restrict sign-up to verified college emails; keep session and item-exchange history visible on profiles to discourage bad behavior.
+    \item \textbf{Points gaming:} require both-party confirmation before awarding/deducting points; cap bonus effects; log all transactions for audit.
+    \item \textbf{Low initial supply of mentors:} seed the platform with a founding cohort of students across branches before wider launch.
+    \item \textbf{Evaluation measurement ambiguity:} instrument timestamps and define clear session/channel-resolution states before development begins.
+    \item \textbf{Operational issues in pilot:} use staging early; ensure CI/CD produces repeatable deployments.
+\end{itemize}
+
+\section{Summary}
+This project proposes UniVerse, a deployable campus web platform that reduces the friction of finding mentorship, learning niche skills, and trusting peer-to-peer lending and lost-and-found exchange. It meets the course criteria by emphasizing time-to-value through rapid iterations, implementing CI/CD to support frequent safe releases, and using measurable evaluation criteria (especially session completion rate). It remains focused on engineering workflow, trust mechanics, and scalability readiness rather than research-driven novelty.
+
+\end{document}
