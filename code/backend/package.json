@@ -1,0 +1,31 @@
+{
+  "name": "ucs503p-202627-universe",
+  "version": "1.0.0",
+  "description": "UniVerse-skillSwap-Community-app",
+  "homepage": "https://github.com/Saejdot23/ucs503p-202627-UniVerse#readme",
+  "bugs": {
+    "url": "https://github.com/Saejdot23/ucs503p-202627-UniVerse/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saejdot23/ucs503p-202627-UniVerse.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "nodemon -r dotenv/config src/index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.9.4",
+    "nodemon": "^3.1.14"
+  }
+}
