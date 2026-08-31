@@ -1,8 +1,6 @@
-# Vidya’s Journal
+# Raynee’s Journal
 
-Roll No. 1024030xxx
-Name: Vidya Vaidyanathan
+Roll No. 1024030711
+Name: Raynee Jindal
 
-+  [W1 : Order of flags in compilation
-   command](./w1-ticket-resolution.md)
-+  […]
+
