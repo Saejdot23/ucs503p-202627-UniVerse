@@ -1,0 +1,158 @@
+{
+  "info": {
+    "_postman_id": "f5cdb8b7-9c50-4d12-91af-9a6cf786b6dd",
+    "name": "UniVerse Backend Auth",
+    "description": "Postman collection for the UniVerse Google OAuth and JWT authentication routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1/auth"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Google OAuth",
+      "item": [
+        {
+          "name": "Register / Login with Google",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Open this URL in a browser. A new @thapar.edu user is registered automatically; an existing Google user is logged in. Postman may not complete the interactive Google consent flow.",
+            "url": {
+              "raw": "{{baseUrl}}/google",
+              "host": ["{{baseUrl}}"],
+              "path": ["google"]
+            }
+          }
+        },
+        {
+          "name": "Google OAuth Callback",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "Google calls this route automatically after authentication. Do not call it manually without a valid code and OAuth state cookie.",
+            "url": {
+              "raw": "{{baseUrl}}/google/callback?code=PASTE_CODE&state=PASTE_STATE",
+              "host": ["{{baseUrl}}"],
+              "path": ["google", "callback"],
+              "query": [
+                {"key": "code", "value": "PASTE_CODE"},
+                {"key": "state", "value": "PASTE_STATE"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Session",
+      "item": [
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Current User",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["me"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Skills exchange enthusiast\",\n  \"degree\": \"B.Tech\",\n  \"branch\": \"CSE\",\n  \"year\": 2,\n  \"EndYear\": 2028,\n  \"CGPA\": 8.5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Avatar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["avatar"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
