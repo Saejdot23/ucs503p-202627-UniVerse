@@ -332,9 +332,9 @@ function AboutCard({ cardRef, visible, delay, accentColor, label, title, desc, i
       <div style={{ fontFamily: 'var(--font-sans)', fontSize: 11, letterSpacing: '0.22em', color: accentColor, textTransform: 'uppercase', marginBottom: 14 }}>{label}</div>
       <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(24px,3vw,34px)', fontWeight: 600, color: '#E8D2AE', margin: '0 0 16px', lineHeight: 1.2 }}>{title}</h3>
       <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'rgba(232,210,174,0.55)', lineHeight: 1.75, margin: 0 }}>{desc}</p>
-      <div style={{ marginTop: 36 }}>
+      {/* <div style={{ marginTop: 36 }}>
         <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: linkColor, letterSpacing: '0.06em', borderBottom: `1px solid ${linkColor}66`, paddingBottom: 2, cursor: 'pointer' }}>Learn more →</span>
-      </div>
+      </div> */}
     </div>
   )
 }

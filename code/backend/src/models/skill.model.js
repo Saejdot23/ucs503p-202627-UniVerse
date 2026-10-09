@@ -32,15 +32,14 @@ const skillSchema = new Schema(
     }
 );
 
-skillSchema.pre("validate", function (next) {
+// Mongoose 9 no longer passes `next` to pre hooks — use async style instead.
+skillSchema.pre("validate", async function () {
     if (this.name) {
         this.name = this.name
             .trim()
             .replace(/\s+/g, " ")
             .toLowerCase();
     }
-
-    next();
 });
 
 export const Skill = mongoose.model("Skill", skillSchema);
