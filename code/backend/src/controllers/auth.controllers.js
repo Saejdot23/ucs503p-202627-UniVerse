@@ -13,7 +13,7 @@ import { parseDurationToMs } from "../utils/time.js";
 
 const THAPAR_EMAIL_REGEX = /^[^@\s]+@thapar\.edu$/i;
 const OAUTH_STATE_COOKIE = "googleOAuthState";
-const UPDATABLE_PROFILE_FIELDS = ["fullName", "bio", "degree", "branch", "year", "EndYear", "CGPA", "username"];
+const UPDATABLE_PROFILE_FIELDS = ["fullName", "bio", "degree", "branch", "year", "EndYear", "CGPA"];
 
 const cookieOptions = {
     httpOnly: true,
@@ -214,12 +214,6 @@ const updateProfile = asyncHandler(async (req, res) => {
     }
     if (!Object.keys(updates).length) throw new ApiError(400, "No valid fields provided to update");
 
-    if (updates.username) {
-        updates.username = String(updates.username).toLowerCase().trim();
-        if (await User.findOne({ username: updates.username, _id: { $ne: req.user._id } })) {
-            throw new ApiError(409, "Username is already taken");
-        }
-    }
     if (updates.CGPA !== undefined) {
         updates.CGPA = Number(updates.CGPA);
         if (Number.isNaN(updates.CGPA) || updates.CGPA < 0 || updates.CGPA > 10) {
@@ -231,7 +225,6 @@ const updateProfile = asyncHandler(async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(req.user._id, { $set: updates }, { new: true, runValidators: true });
         return res.status(200).json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
     } catch (error) {
-        if (error?.code === 11000) throw new ApiError(409, "Username is already in use");
         throw error;
     }
 });

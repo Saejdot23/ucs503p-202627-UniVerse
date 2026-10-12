@@ -19,9 +19,38 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             throw new ApiError(401, "Invalid access token");
         }
 
+        // ── Account status enforcement ──────────────────────────────────────
+        if (user.status === "banned") {
+            throw new ApiError(403, "Your account has been permanently banned");
+        }
+
+        if (user.status === "suspended") {
+            const now = new Date();
+            if (user.suspendedUntil && user.suspendedUntil > now) {
+                throw new ApiError(
+                    403,
+                    `Your account is temporarily suspended until ${user.suspendedUntil.toUTCString()}`
+                );
+            }
+            // Suspension has expired — auto-lift it
+            await User.findByIdAndUpdate(user._id, {
+                $set: { status: "active", suspendedUntil: null },
+            });
+            user.status = "active";
+            user.suspendedUntil = null;
+        }
+
         req.user = user;
         next();
     } catch (error) {
         throw new ApiError(401, error?.message || "Invalid access token");
     }
 });
+
+/** requireAdmin — must be used AFTER verifyJWT */
+export const requireAdmin = (req, _res, next) => {
+    if (req.user?.role !== "admin") {
+        throw new ApiError(403, "Admin access required");
+    }
+    next();
+};

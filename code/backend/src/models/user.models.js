@@ -91,10 +91,31 @@ const UserSchema = new Schema(
             },
         ],
 
+        // ── Saved posts ──────────────────────────────────────────────────────
+        savedPosts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "Post",
+            },
+        ],
+
         credits: {
             type: Number,
-            default: 0,
+            default: 50,
             min: [0, "Credits cannot be negative"],
+        },
+
+        // ── Account status ──────────────────────────────────────────────────
+        status: {
+            type: String,
+            enum: ["active", "suspended", "banned"],
+            default: "active",
+        },
+
+        // Populated when status === "suspended"; null means no active suspension end date
+        suspendedUntil: {
+            type: Date,
+            default: null,
         },
 
         averageRating: {
