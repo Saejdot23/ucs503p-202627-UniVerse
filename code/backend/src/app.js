@@ -44,12 +44,19 @@ const globalLimiter = rateLimit({
     message: { statusCode: 429, message: "Too many requests, please try again later", success: false },
 });
 
+// Auth rate limiter — stricter limits for sensitive auth operations
+// Does NOT apply to /auth/me and /auth/refresh-token to prevent false positives
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: Number(process.env.AUTH_RATE_LIMIT_MAX) || 30,
     standardHeaders: true,
     legacyHeaders: false,
     message: { statusCode: 429, message: "Too many authentication requests", success: false },
+    skip: (req) => {
+        // Skip rate limiting for /auth/me and /auth/refresh-token to avoid false positives
+        const path = req.path;
+        return path === "/me" || path === "/refresh-token";
+    },
 });
 
 app.use(globalLimiter);
