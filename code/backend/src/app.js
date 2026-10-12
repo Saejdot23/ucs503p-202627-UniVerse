@@ -13,6 +13,7 @@ import reportRouter from "./routes/report.routes.js";
 import sessionRouter from "./routes/session.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import adminRouter from "./routes/admin.routes.js";
+import sessionScheduleRouter from "./routes/sessionSchedule.routes.js";
 
 import { ApiError } from "./utils/ApiError.js";
 
@@ -71,6 +72,7 @@ app.use("/api/v1/reports", reportRouter);
 app.use("/api/v1/sessions", sessionRouter);
 app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/session-schedule", sessionScheduleRouter);
 
 // ── Health check ─────────────────────────────────────────────────────────────
 app.get("/health", (_req, res) => res.status(200).json({ status: "ok", service: "UniVerse API" }));
