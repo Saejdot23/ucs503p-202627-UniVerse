@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { skillsApi } from '../../services/api'
 import Avatar from '../../components/ui/Avatar'
+import { StarDisplay } from '../../components/ui/StarRating'
 import LoadingSpinner from '../../components/ui/LoadingSpinner'
 import { EmptyState } from '../../components/ui/ErrorState'
 
@@ -11,7 +12,21 @@ export default function TeachMode({ onBack }) {
   const [q, setQ] = useState('')
   const [category, setCategory] = useState('')
   const [page, setPage] = useState(1)
+  const [debouncedQ, setDebouncedQ] = useState('')
   const navigate = useNavigate()
+
+  // Debounce the search query by 350ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQ(q)
+    }, 350)
+    return () => clearTimeout(timer)
+  }, [q])
+
+  // Reset page when tab changes
+  useEffect(() => {
+    setPage(1)
+  }, [searchTab])
 
   const { data, isLoading } = useQuery({
     queryKey: ['teachDiscovery', q, category, page],
@@ -19,6 +34,18 @@ export default function TeachMode({ onBack }) {
     select: (res) => res.data?.data,
     keepPreviousData: true,
   })
+
+  // Users tab query
+  const { data: usersData, isLoading: usersLoading } = useQuery({
+    queryKey: ['teachDiscoveryUsers', debouncedQ, page],
+    queryFn: () => skillsApi.teachDiscoveryUsers({ q: debouncedQ, page, limit: 15 }),
+    select: (res) => res.data?.data,
+    keepPreviousData: true,
+    enabled: searchTab === 'users',
+  })
+
+  const isLoading_ = searchTab === 'skills' ? isLoading : usersLoading
+  const currentData = searchTab === 'skills' ? data : usersData
 
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto', padding: '32px 24px' }}>
@@ -72,6 +99,7 @@ export default function TeachMode({ onBack }) {
             fontSize: 13,
             outline: 'none',
             cursor: 'pointer',
+            display: searchTab === 'users' ? 'none' : 'block',
           }}
         >
           <option value="">All Categories</option>
@@ -116,52 +144,102 @@ export default function TeachMode({ onBack }) {
       </div>
 
       {/* Results */}
-      {isLoading ? (
+      {isLoading_ ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
           <LoadingSpinner size={28} />
         </div>
-      ) : !data?.skills?.length ? (
-        <EmptyState message="No skills found matching your search." icon="⊕" />
+      ) : searchTab === 'skills' ? (
+        !data?.skills?.length ? (
+          <EmptyState message="No skills found matching your search." icon="⊕" />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {data.skills.map((skill) => (
+              <SkillTeachCard
+                key={skill._id}
+                skill={skill}
+                navigate={navigate}
+              />
+            ))}
+          </div>
+        )
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {data.skills.map((skill) => (
-            <SkillTeachCard
-              key={skill._id}
-              skill={skill}
-              navigate={navigate}
-            />
-          ))}
-        </div>
+        // Users tab
+        !usersData?.users?.length ? (
+          <EmptyState message="No learners found." icon="⊕" />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {usersData.users.map((user) => (
+              <UserDiscoveryCard
+                key={user._id}
+                user={user}
+                onClick={() => navigate(`/profile/${user.username}`)}
+                accentColor="var(--plum)"
+                skillLabel={`Wants to learn ${user.skillCount || 0} skill${user.skillCount !== 1 ? 's' : ''}`}
+              />
+            ))}
+          </div>
+        )
       )}
 
       {/* Pagination */}
-      {data?.totalPages > 1 && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 8,
-            marginTop: 28,
-          }}
-        >
-          <button
-            className="btn btn-ghost"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
+      {searchTab === 'skills' ? (
+        data?.totalPages > 1 && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 8,
+              marginTop: 28,
+            }}
           >
-            ← Prev
-          </button>
-          <span style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: 13 }}>
-            {page} / {data.totalPages}
-          </span>
-          <button
-            className="btn btn-ghost"
-            onClick={() => setPage((p) => p + 1)}
-            disabled={page >= data.totalPages}
+            <button
+              className="btn btn-ghost"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              ← Prev
+            </button>
+            <span style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: 13 }}>
+              {page} / {data.totalPages}
+            </span>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page >= data.totalPages}
+            >
+              Next →
+            </button>
+          </div>
+        )
+      ) : (
+        usersData?.totalPages > 1 && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 8,
+              marginTop: 28,
+            }}
           >
-            Next →
-          </button>
-        </div>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              ← Prev
+            </button>
+            <span style={{ padding: '10px 16px', color: 'var(--text-muted)', fontSize: 13 }}>
+              {page} / {usersData.totalPages}
+            </span>
+            <button
+              className="btn btn-ghost"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page >= usersData.totalPages}
+            >
+              Next →
+            </button>
+          </div>
+        )
       )}
     </div>
   )
@@ -317,6 +395,76 @@ function UserRow({ user, onClick, accentColor }) {
       >
         View Profile →
       </span>
+    </div>
+  )
+}
+
+function UserDiscoveryCard({ user, onClick, accentColor, skillLabel }) {
+  const [hov, setHov] = useState(false)
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '12px 14px',
+        borderRadius: 'var(--radius-sm)',
+        background: hov ? 'rgba(232,210,174,0.06)' : 'transparent',
+        border: `1px solid ${hov ? 'rgba(232,210,174,0.14)' : 'transparent'}`,
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+        outline: 'none',
+      }}
+    >
+      <Avatar src={user.avatar} name={user.fullName} size={38} />
+      <div style={{ flex: 1 }}>
+        <p
+          style={{
+            fontSize: 13,
+            color: 'var(--text-primary)',
+            margin: 0,
+            fontWeight: 500,
+          }}
+        >
+          {user.fullName}
+        </p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>
+          @{user.username}
+          {user.branch ? ` · ${user.branch}` : ''}
+          {user.year ? ` · Year ${user.year}` : ''}
+        </p>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+          {skillLabel}
+        </p>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+        {user.averageRating > 0 ? (
+          <div style={{ textAlign: 'right' }}>
+            <StarDisplay rating={user.averageRating} size={12} />
+            <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>
+              {user.averageRating.toFixed(1)}
+            </p>
+          </div>
+        ) : (
+          <span style={{ fontSize: 11, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>New</span>
+        )}
+        <span
+          style={{
+            fontSize: 12,
+            color: hov ? accentColor : 'var(--text-muted)',
+            transition: 'color 0.15s',
+          }}
+        >
+          View Profile →
+        </span>
+      </div>
     </div>
   )
 }
