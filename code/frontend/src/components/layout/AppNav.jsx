@@ -127,7 +127,6 @@ export default function AppNav() {
                 { label: 'My Profile', action: () => navigate(`/profile/${user?.username}`) },
                 { label: 'Credits History', action: () => navigate('/profile/credits') },
                 { label: 'Saved Posts', action: () => navigate('/profile/saved') },
-                { label: 'Settings', action: () => navigate('/settings') },
               ].map(item => (
                 <button
                   key={item.label}
