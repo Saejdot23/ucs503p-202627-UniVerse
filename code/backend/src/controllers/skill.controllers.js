@@ -291,3 +291,163 @@ export const learnDiscovery = asyncHandler(async (req, res) => {
         }, "Learn discovery results")
     );
 });
+
+/**
+ * GET /api/v1/skills/learn-discovery-users
+ * For "I Want to Learn" mode → Users tab.
+ * Discover potential mentors (users who offer skills to teach).
+ * Returns users sorted by: averageRating DESC, skill count DESC, username ASC (stable).
+ */
+export const learnDiscoveryUsers = asyncHandler(async (req, res) => {
+    const { q, page = 1, limit = 20 } = req.query;
+    const currentUserId = req.user._id.toString();
+
+    // Filter: active users, exclude current user, must have ≥1 teach skill
+    const filter = {
+        status: "active",
+        _id: { $ne: currentUserId },
+        skillsToTeach: { $exists: true, $ne: [] },
+    };
+
+    // Name search: case-insensitive, match either fullName or username
+    if (q && q.trim()) {
+        const searchTerm = q.trim();
+        filter.$or = [
+            { fullName: { $regex: searchTerm, $options: "i" } },
+            { username: { $regex: searchTerm, $options: "i" } },
+        ];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Aggregate to get users with skill counts and proper sorting
+    const users = await User.aggregate([
+        { $match: filter },
+        {
+            $addFields: {
+                skillCount: { $size: "$skillsToTeach" },
+            },
+        },
+        // Sort by rating DESC, skill count DESC, username ASC
+        {
+            $sort: {
+                averageRating: -1,
+                skillCount: -1,
+                username: 1,
+            },
+        },
+        { $skip: skip },
+        { $limit: Number(limit) },
+        {
+            $project: {
+                _id: 1,
+                fullName: 1,
+                username: 1,
+                avatar: 1,
+                branch: 1,
+                year: 1,
+                averageRating: 1,
+                totalRatings: 1,
+                skillCount: 1,
+                skillsToTeach: 1,
+            },
+        },
+    ]);
+
+    // Populate skill names
+    const populatedUsers = await User.populate(users, {
+        path: "skillsToTeach",
+        select: "name category",
+    });
+
+    const total = await User.countDocuments(filter);
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            users: populatedUsers,
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / Number(limit)),
+        }, "Learn discovery users fetched")
+    );
+});
+
+/**
+ * GET /api/v1/skills/teach-discovery-users
+ * For "I Want to Teach" mode → Users tab.
+ * Discover potential learners (users who want skills to learn).
+ * Returns users sorted by: averageRating DESC, skill count DESC, username ASC (stable).
+ */
+export const teachDiscoveryUsers = asyncHandler(async (req, res) => {
+    const { q, page = 1, limit = 20 } = req.query;
+    const currentUserId = req.user._id.toString();
+
+    // Filter: active users, exclude current user, must have ≥1 learn skill
+    const filter = {
+        status: "active",
+        _id: { $ne: currentUserId },
+        skillsToLearn: { $exists: true, $ne: [] },
+    };
+
+    // Name search: case-insensitive, match either fullName or username
+    if (q && q.trim()) {
+        const searchTerm = q.trim();
+        filter.$or = [
+            { fullName: { $regex: searchTerm, $options: "i" } },
+            { username: { $regex: searchTerm, $options: "i" } },
+        ];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Aggregate to get users with skill counts and proper sorting
+    const users = await User.aggregate([
+        { $match: filter },
+        {
+            $addFields: {
+                skillCount: { $size: "$skillsToLearn" },
+            },
+        },
+        // Sort by rating DESC, skill count DESC, username ASC
+        {
+            $sort: {
+                averageRating: -1,
+                skillCount: -1,
+                username: 1,
+            },
+        },
+        { $skip: skip },
+        { $limit: Number(limit) },
+        {
+            $project: {
+                _id: 1,
+                fullName: 1,
+                username: 1,
+                avatar: 1,
+                branch: 1,
+                year: 1,
+                averageRating: 1,
+                totalRatings: 1,
+                skillCount: 1,
+                skillsToLearn: 1,
+            },
+        },
+    ]);
+
+    // Populate skill names
+    const populatedUsers = await User.populate(users, {
+        path: "skillsToLearn",
+        select: "name category",
+    });
+
+    const total = await User.countDocuments(filter);
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            users: populatedUsers,
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / Number(limit)),
+        }, "Teach discovery users fetched")
+    );
+});

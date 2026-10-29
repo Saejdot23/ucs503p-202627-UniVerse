@@ -119,6 +119,8 @@ export const skillsApi = {
   removeLearnSkill: (skillId) => api.delete(`/skills/my/learn/${skillId}`),
   teachDiscovery: (params) => api.get('/skills/teach-discovery', { params }),
   learnDiscovery: (params) => api.get('/skills/learn-discovery', { params }),
+  teachDiscoveryUsers: (params) => api.get('/skills/teach-discovery-users', { params }),
+  learnDiscoveryUsers: (params) => api.get('/skills/learn-discovery-users', { params }),
 }
 
 // ── Posts ─────────────────────────────────────────────────────────────────────

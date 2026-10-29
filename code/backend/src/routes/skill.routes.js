@@ -10,6 +10,8 @@ import {
     removeLearnSkill,
     teachDiscovery,
     learnDiscovery,
+    learnDiscoveryUsers,
+    teachDiscoveryUsers,
 } from "../controllers/skill.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
@@ -22,6 +24,8 @@ router.use(verifyJWT);
 router.route("/").get(listSkills).post(createSkill);
 router.route("/teach-discovery").get(teachDiscovery);
 router.route("/learn-discovery").get(learnDiscovery);
+router.route("/teach-discovery-users").get(teachDiscoveryUsers);
+router.route("/learn-discovery-users").get(learnDiscoveryUsers);
 router.route("/my").get(getMySkills);
 router.route("/:id").get(getSkillById);
 
