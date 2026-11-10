@@ -18,6 +18,9 @@ import sessionScheduleRouter from "./routes/sessionSchedule.routes.js";
 import { ApiError } from "./utils/ApiError.js";
 
 const app = express();
+if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+}
 
 // ── Security headers ──────────────────────────────────────────────────────────
 app.use(helmet());

@@ -15,10 +15,12 @@ const THAPAR_EMAIL_REGEX = /^[^@\s]+@thapar\.edu$/i;
 const OAUTH_STATE_COOKIE = "googleOAuthState";
 const UPDATABLE_PROFILE_FIELDS = ["fullName", "bio", "degree", "branch", "year", "EndYear", "CGPA"];
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.COOKIE_SAME_SITE || "lax",
+    secure: isProduction,
+    sameSite: process.env.COOKIE_SAME_SITE || (isProduction ? "none" : "lax"),
 };
 
 const oauthStateCookieOptions = { ...cookieOptions, maxAge: 10 * 60 * 1000 };
