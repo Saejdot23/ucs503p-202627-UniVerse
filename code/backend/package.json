@@ -18,7 +18,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "nodemon -r dotenv/config src/index.js"
+    "dev": "nodemon -r dotenv/config src/index.js",
+    "start": "node src/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
