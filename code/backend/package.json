@@ -39,7 +39,7 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14",
+    "nodemon": "^3.1.11",
     "prettier": "3.9.6"
   }
 }
