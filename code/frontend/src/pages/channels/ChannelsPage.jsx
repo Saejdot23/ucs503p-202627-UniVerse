@@ -6,7 +6,7 @@ const CHANNELS = [
   {
     id: 'general',
     label: 'General',
-    emoji: '💬',
+    emoji: '',
     desc: 'College discussions, questions, advice, and campus conversations.',
     color: 'var(--muted-blue)',
     features: ['upvote / downvote', 'nested comments', 'save / share / report'],
@@ -14,7 +14,7 @@ const CHANNELS = [
   {
     id: 'borrow_lend',
     label: 'Borrow / Lend',
-    emoji: '📚',
+    emoji: '',
     desc: 'Lend or borrow campus resources — books, lab coats, calculators.',
     color: 'var(--plum)',
     features: ['LEND / BORROW tags', 'photos', 'mark resolved'],
@@ -22,7 +22,7 @@ const CHANNELS = [
   {
     id: 'lost_found',
     label: 'Lost & Found',
-    emoji: '🔎',
+    emoji: '',
     desc: 'Report a lost item or share what you found on campus.',
     color: '#e5a020',
     features: ['LOST / FOUND tags', 'location', 'photos', 'mark resolved'],
