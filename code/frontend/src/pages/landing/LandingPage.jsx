@@ -480,7 +480,8 @@ function GoogleIcon() {
 
 export default function LandingPage() {
   const handleGetStarted = () => {
-    window.location.href = '/api/v1/auth/google'
+    const API_URL = import.meta.env.VITE_API_URL || "/api/v1";
+    window.location.href = `${API_URL}/auth/google`;
   }
 
   return (
